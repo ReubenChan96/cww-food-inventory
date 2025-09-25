@@ -5,12 +5,11 @@ import { FormHandler } from './components/form-handler.js';
 class App {
   private inventoryService: InventoryService;
   private renderer: InventoryRenderer;
-  private formHandler: FormHandler;
 
   constructor() {
     this.inventoryService = new InventoryService();
     this.renderer = new InventoryRenderer(this.inventoryService);
-    this.formHandler = new FormHandler(this.inventoryService, this.renderer);
+    new FormHandler(this.inventoryService, this.renderer);
   }
 
   init(): void {
