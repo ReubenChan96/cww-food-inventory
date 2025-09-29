@@ -15,7 +15,8 @@ class Config:
     DB_PORT = os.environ.get('DB_PORT', '5432')
     DB_NAME = os.environ.get('DB_NAME', 'inventory_db')
     
-    SQLALCHEMY_DATABASE_URI = f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+    # CRITICAL: Use postgresql+psycopg:// for psycopg3
+    SQLALCHEMY_DATABASE_URI = f'postgresql+psycopg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
     
     # CORS Configuration
     CORS_ORIGINS = ['http://localhost:3000', 'http://localhost:5173']
@@ -31,7 +32,6 @@ class ProductionConfig(Config):
     DEBUG = False
 
 
-# Configuration dictionary
 config = {
     'development': DevelopmentConfig,
     'production': ProductionConfig,
