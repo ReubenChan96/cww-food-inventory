@@ -57,6 +57,9 @@ import {
 import { toast } from "sonner";
 import { Toaster } from "./components/ui/sonner";
 import { PantryKeeperLogo } from "./components/PantryKeeperLogo";
+import { useEffect } from "react";  // Add useEffect to the existing React import
+import { inventoryService } from "./services/inventoryService";
+
 
 interface InventoryItem {
   id: string;
@@ -73,229 +76,26 @@ interface InventoryItem {
 }
 
 export default function App() {
-  const [items, setItems] = useState<InventoryItem[]>([
-    {
-      id: "1",
-      name: "Paddy King Brown Rice, 5kg",
-      description: "Premium brown rice, whole grain",
-      quantity: 3,
-      expiry: "2026-03-15",
-      status: "fresh",
-      batchNumber: "PADD-001",
-      receivedDate: "2025-08-10",
-      donor: "Paddy King Distributor",
-      lastModifiedBy: "Sarah Chen",
-      lastModifiedDate: "2025-09-15",
-    },
-    {
-      id: "2",
-      name: "Balducci Spaghetti",
-      description: "Italian pasta, 500g pack",
-      quantity: 4,
-      expiry: "2026-06-20",
-      status: "fresh",
-      batchNumber: "BALD-001",
-      receivedDate: "2025-07-22",
-      donor: "FairPrice Foundation",
-      lastModifiedBy: "Marcus Tan",
-      lastModifiedDate: "2025-08-30",
-    },
-    {
-      id: "3",
-      name: "FairPrice Vermicelli",
-      description: "Rice vermicelli noodles",
-      quantity: 4,
-      expiry: "2026-04-10",
-      status: "fresh",
-      batchNumber: "FAIR-001",
-      receivedDate: "2025-08-05",
-      donor: "FairPrice Foundation",
-      lastModifiedBy: "Sarah Chen",
-      lastModifiedDate: "2025-09-12",
-    },
-    {
-      id: "4",
-      name: "Happy Family Vermicelli",
-      description: "Traditional vermicelli noodles",
-      quantity: 6,
-      expiry: "2025-10-09",
-      status: "expiring",
-      batchNumber: "HAPP-001",
-      receivedDate: "2025-06-15",
-      donor: "Community Donation Drive",
-      lastModifiedBy: "David Lim",
-      lastModifiedDate: "2025-09-20",
-    },
-    {
-      id: "5",
-      name: "Pasar Red Bean",
-      description: "Dried red beans, 500g",
-      quantity: 4,
-      expiry: "2026-02-28",
-      status: "fresh",
-      batchNumber: "PASA-001",
-      receivedDate: "2025-07-18",
-      donor: "Local Market Network",
-      lastModifiedBy: "Sarah Chen",
-      lastModifiedDate: "2025-08-25",
-    },
-    {
-      id: "6",
-      name: "Pasar Green Bean",
-      description: "Dried green beans, 500g",
-      quantity: 5,
-      expiry: "2026-03-05",
-      status: "fresh",
-      batchNumber: "PASA-002",
-      receivedDate: "2025-07-18",
-      donor: "Local Market Network",
-      lastModifiedBy: "Marcus Tan",
-      lastModifiedDate: "2025-09-10",
-    },
-    {
-      id: "7",
-      name: "Pasar Barley",
-      description: "Pearl barley, great for soups",
-      quantity: 3,
-      expiry: "2025-08-12",
-      status: "expired",
-      batchNumber: "PASA-003",
-      receivedDate: "2025-03-20",
-      donor: "Local Market Network",
-      lastModifiedBy: "Sarah Chen",
-      lastModifiedDate: "2025-08-12",
-    },
-    {
-      id: "8",
-      name: "Pasar Rock Sugar",
-      description: "Natural rock sugar crystals",
-      quantity: 4,
-      expiry: "2027-01-30",
-      status: "fresh",
-      batchNumber: "PASA-004",
-      receivedDate: "2025-08-01",
-      donor: "Local Market Network",
-      lastModifiedBy: "David Lim",
-      lastModifiedDate: "2025-09-18",
-    },
-    {
-      id: "9",
-      name: "San Remo Bolognese and Mushroom Pasta Sauce",
-      description: "Ready-to-use pasta sauce, 500g jar",
-      quantity: 13,
-      expiry: "2026-03-02",
-      status: "fresh",
-      batchNumber: "SANR-001",
-      receivedDate: "2025-07-10",
-      donor: "San Remo Singapore",
-      lastModifiedBy: "Marcus Tan",
-      lastModifiedDate: "2025-09-05",
-    },
-    {
-      id: "10",
-      name: "Happy Family Fine Sugar",
-      description: "Refined white sugar",
-      quantity: 1,
-      expiry: "2026-05-28",
-      status: "fresh",
-      batchNumber: "HAPP-002",
-      receivedDate: "2025-06-12",
-      donor: "Community Donation Drive",
-      lastModifiedBy: "Sarah Chen",
-      lastModifiedDate: "2025-09-22",
-    },
-    {
-      id: "11",
-      name: "Mitr Phol Pure Refined Sugar",
-      description: "Premium refined sugar from Thailand",
-      quantity: 6,
-      expiry: "2026-01-22",
-      status: "fresh",
-      batchNumber: "MITR-001",
-      receivedDate: "2025-05-08",
-      donor: "Wholesale Supplier",
-      lastModifiedBy: "David Lim",
-      lastModifiedDate: "2025-08-28",
-    },
-    {
-      id: "12",
-      name: "Happy Family Can Mushrooms",
-      description: "Canned button mushrooms in brine",
-      quantity: 11,
-      expiry: "2027-09-28",
-      status: "fresh",
-      batchNumber: "HAPP-003",
-      receivedDate: "2025-08-15",
-      donor: "Community Donation Drive",
-      lastModifiedBy: "Marcus Tan",
-      lastModifiedDate: "2025-09-14",
-    },
-    {
-      id: "13",
-      name: "Ayam Brand Can Tuna",
-      description: "Tuna chunks in brine, 150g can",
-      quantity: 3,
-      expiry: "2027-08-07",
-      status: "fresh",
-      batchNumber: "AYAM-001",
-      receivedDate: "2025-07-25",
-      donor: "Ayam Brand Singapore",
-      lastModifiedBy: "Sarah Chen",
-      lastModifiedDate: "2025-09-16",
-    },
-    {
-      id: "14",
-      name: "Century Can Tuna",
-      description: "Premium tuna in oil, 185g can",
-      quantity: 17,
-      expiry: "2027-08-15",
-      status: "fresh",
-      batchNumber: "CENT-001",
-      receivedDate: "2025-08-02",
-      donor: "Century Pacific Singapore",
-      lastModifiedBy: "David Lim",
-      lastModifiedDate: "2025-09-08",
-    },
-    {
-      id: "15",
-      name: "Kara Coconut Milk",
-      description: "Rich coconut milk, 200ml pack",
-      quantity: 2,
-      expiry: "2026-05-15",
-      status: "fresh",
-      batchNumber: "KARA-001",
-      receivedDate: "2025-06-20",
-      donor: "FairPrice Foundation",
-      lastModifiedBy: "Marcus Tan",
-      lastModifiedDate: "2025-09-11",
-    },
-    {
-      id: "16",
-      name: "Tiger Brand Light Soya Sauce",
-      description: "Light soy sauce, 640ml bottle",
-      quantity: 11,
-      expiry: "2026-11-29",
-      status: "fresh",
-      batchNumber: "TIGE-001",
-      receivedDate: "2025-07-05",
-      donor: "Tiger Brand Distributor",
-      lastModifiedBy: "Sarah Chen",
-      lastModifiedDate: "2025-09-19",
-    },
-    {
-      id: "17",
-      name: "Elephant Brand Light Soya Bean Sauce",
-      description: "Light soya bean sauce, premium quality",
-      quantity: 6,
-      expiry: "2025-06-30",
-      status: "expired",
-      batchNumber: "ELEP-001",
-      receivedDate: "2025-01-15",
-      donor: "Wholesale Supplier",
-      lastModifiedBy: "David Lim",
-      lastModifiedDate: "2025-06-30",
-    },
-  ]);
+    const [items, setItems] = useState<InventoryItem[]>([]);
+    const [loading, setLoading] = useState(true);
+
+// Fetch items from Supabase on mount
+useEffect(() => {
+  async function fetchItems() {
+    try {
+      setLoading(true);
+      const data = await inventoryService.getAll();
+      setItems(data);
+    } catch (error) {
+      console.error('Error fetching items:', error);
+      toast.error('Failed to load inventory. Please refresh the page.');
+    } finally {
+      setLoading(false);
+    }
+  }
+  
+  fetchItems();
+}, []);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] =
@@ -372,51 +172,52 @@ export default function App() {
     return `${prefix}-${String(existingBatches + 1).padStart(3, "0")}`;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    if (
-      !formData.name.trim() ||
-      !formData.quantity ||
-      !formData.expiry ||
-      !formData.modifiedBy.trim()
-    ) {
-      toast.error(
-        "Please fill in all required fields including who is making this change",
-      );
-      return;
-    }
+  if (
+    !formData.name.trim() ||
+    !formData.quantity ||
+    !formData.expiry ||
+    !formData.modifiedBy.trim()
+  ) {
+    toast.error(
+      "Please fill in all required fields including who is making this change",
+    );
+    return;
+  }
 
-    const quantity = parseInt(formData.quantity);
-    if (quantity <= 0) {
-      toast.error("Quantity must be greater than 0");
-      return;
-    }
+  const quantity = parseInt(formData.quantity);
+  if (quantity <= 0) {
+    toast.error("Quantity must be greater than 0");
+    return;
+  }
 
-    const status = getItemStatus(formData.expiry);
-    const currentDate = new Date().toISOString().split("T")[0];
+  const status = getItemStatus(formData.expiry);
+  const currentDate = new Date().toISOString().split("T")[0];
 
+  try {
     if (editingItem) {
+      // UPDATE existing item in Supabase
+      const updated = await inventoryService.update(editingItem.id, {
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        quantity,
+        expiry: formData.expiry,
+        status,
+        lastModifiedBy: formData.modifiedBy.trim(),
+        lastModifiedDate: currentDate,
+      });
+      
       setItems((prev) =>
         prev.map((item) =>
-          item.id === editingItem.id
-            ? {
-                ...item,
-                name: formData.name.trim(),
-                description: formData.description.trim(),
-                quantity,
-                expiry: formData.expiry,
-                status,
-                lastModifiedBy: formData.modifiedBy.trim(),
-                lastModifiedDate: currentDate,
-              }
-            : item,
-        ),
+          item.id === updated.id ? updated : item
+        )
       );
       toast.success("Item updated successfully");
     } else {
-      const newItem: InventoryItem = {
-        id: Date.now().toString(),
+      // CREATE new item in Supabase
+      const newItem = await inventoryService.create({
         name: formData.name.trim(),
         description: formData.description.trim(),
         quantity,
@@ -427,14 +228,19 @@ export default function App() {
         donor: formData.donor.trim() || undefined,
         lastModifiedBy: formData.modifiedBy.trim(),
         lastModifiedDate: currentDate,
-      };
-      setItems((prev) => [...prev, newItem]);
+      });
+      
+      setItems((prev) => [newItem, ...prev]);
       toast.success("Item added successfully");
     }
-
+    
     resetForm();
     setIsAddDialogOpen(false);
-  };
+  } catch (error) {
+    console.error('Error saving item:', error);
+    toast.error('Failed to save item. Please try again.');
+  }
+};
 
   const handleEdit = (item: InventoryItem) => {
     setEditingItem(item);
@@ -449,12 +255,19 @@ export default function App() {
     setIsAddDialogOpen(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
+  try {
+    await inventoryService.delete(id);
     setItems((prev) => prev.filter((item) => item.id !== id));
     toast.success("Item deleted successfully");
+  } catch (error) {
+    console.error('Error deleting item:', error);
+    toast.error('Failed to delete item. Please try again.');
+  } finally {
     setDeleteDialogOpen(false);
     setItemToDelete(null);
-  };
+  }
+};
 
   const handleDeleteClick = (id: string) => {
     setItemToDelete(id);
@@ -911,7 +724,12 @@ export default function App() {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            {filteredItems.length === 0 ? (
+            {loading ? (
+              <div className="text-center py-12 text-gray-500">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-lg font-medium">Loading inventory...</p>
+              </div>
+            ) : filteredItems.length === 0 ? (
               <div className="text-center py-12 text-gray-500">
                 <Package className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                 <p className="text-lg font-medium">
