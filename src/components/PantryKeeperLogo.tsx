@@ -6,26 +6,40 @@ interface PantryKeeperLogoProps {
 
 export function PantryKeeperLogo({ className = "w-12 h-12" }: PantryKeeperLogoProps) {
   return (
-    <svg
-      viewBox="0 0 100 100"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-    >
-      {/* Abstract pantry shelves design - larger elements, less padding */}
-      {/* Top shelf */}
-      <rect x="15" y="15" width="70" height="6" rx="3" fill="white" fillOpacity="0.9" />
-      <rect x="18" y="22" width="22" height="18" rx="2" fill="white" fillOpacity="0.75" />
-      <rect x="45" y="22" width="28" height="18" rx="2" fill="white" fillOpacity="0.85" />
-      
-      {/* Middle shelf */}
-      <rect x="15" y="45" width="70" height="6" rx="3" fill="white" fillOpacity="0.9" />
-      <rect x="18" y="52" width="18" height="22" rx="2" fill="white" fillOpacity="0.8" />
-      <rect x="40" y="52" width="16" height="22" rx="2" fill="white" fillOpacity="0.7" />
-      <rect x="60" y="52" width="22" height="22" rx="2" fill="white" fillOpacity="0.85" />
-      
-      {/* Bottom shelf */}
-      <rect x="15" y="79" width="70" height="6" rx="3" fill="white" fillOpacity="0.9" />
-    </svg>
+    <div className={`${className} bg-[#1b6df7] rounded-[22%] flex items-center justify-center p-[14%]`}>
+      <svg
+        viewBox="0 0 240 210"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-full h-full"
+      >
+        {/* Top bar */}
+        <rect x="5" y="5" width="230" height="18" rx="9" fill="white" />
+        
+        {/* First row - left cell */}
+        <rect x="10" y="33" width="42" height="48" rx="4" fill="white" />
+        
+        {/* First row - middle cell */}
+        <rect x="62" y="33" width="94" height="48" rx="4" fill="white" />
+        
+        {/* First row - right cell */}
+        <rect x="166" y="33" width="64" height="48" rx="4" fill="white" />
+        
+        {/* Middle bar */}
+        <rect x="5" y="91" width="230" height="18" rx="9" fill="white" />
+        
+        {/* Second row - left cell */}
+        <rect x="10" y="119" width="90" height="56" rx="4" fill="white" />
+        
+        {/* Second row - middle cell */}
+        <rect x="110" y="119" width="30" height="56" rx="4" fill="white" />
+        
+        {/* Second row - right cell */}
+        <rect x="150" y="119" width="80" height="56" rx="4" fill="white" />
+        
+        {/* Bottom bar */}
+        <rect x="5" y="185" width="230" height="18" rx="9" fill="white" />
+      </svg>
+    </div>
   );
 }
