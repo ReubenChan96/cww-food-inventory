@@ -59,7 +59,6 @@ import { PantryKeeperLogo } from "./components/PantryKeeperLogo";
 import { useEffect } from "react";  // Add useEffect to the existing React import
 import { inventoryService } from "./services/inventoryService";
 
-
 interface InventoryItem {
   id: string;
   name: string;
@@ -72,6 +71,24 @@ interface InventoryItem {
   donor?: string;
   lastModifiedBy?: string;
   lastModifiedDate?: string;
+}
+
+/**
+ * Checks if a food item has expired
+ * @param {string} expirationDate - The expiration date to check (YYYY-MM-DD format)
+ * @returns {boolean} - true if expired, false if still valid
+ */
+function isExpired(expirationDate: string): boolean {
+  if (!expirationDate) return false;
+  
+  const expDate = new Date(expirationDate);
+  const today = new Date();
+  
+  // Set both to midnight for fair comparison
+  today.setHours(0, 0, 0, 0);
+  expDate.setHours(0, 0, 0, 0);
+  
+  return expDate < today;
 }
 
 export default function App() {
@@ -118,6 +135,9 @@ useEffect(() => {
     modifiedBy: "",
   });
 
+  const [expiryError, setExpiryError] = useState("");
+  const [expiryTouched, setExpiryTouched] = useState(false);
+
   const getItemStatus = (
     expiryDate: string,
   ): "fresh" | "expiring" | "expired" => {
@@ -160,6 +180,21 @@ useEffect(() => {
     setEditingItem(null);
   };
 
+  const handleExpiryChange = (newDate: string) => {
+    setFormData((prev) => ({ ...prev, expiry: newDate }));
+    
+    // Clear any previous error
+    setExpiryError("");
+    setExpiryTouched(true);
+    
+    // Validate the new date
+    if (newDate && isExpired(newDate)) {
+      setExpiryError(
+        `Uh oh, this item seems to have expired, please check the label again!`
+      );
+    }
+  };
+
   const generateBatchNumber = (name: string) => {
     const prefix = name
       .substring(0, 4)
@@ -173,6 +208,12 @@ useEffect(() => {
 
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
+    
+  if (formData.expiry && isExpired(formData.expiry)) {
+      setExpiryError('Looks like this item is expired!');
+      toast.error('Expired items cannot be added to the inventory');
+      return; // Stop submission
+    }
 
   if (
     !formData.name.trim() ||
@@ -847,10 +888,7 @@ useEffect(() => {
                   </div>
 
                   <div className="space-y-3">
-                    <Label
-                      htmlFor="expiry"
-                      className="text-base"
-                    >
+                    <Label htmlFor="expiry" className="text-base">
                       Expiry Date *
                     </Label>
                     <div className="relative">
@@ -858,17 +896,24 @@ useEffect(() => {
                         id="expiry"
                         type="date"
                         value={formData.expiry}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            expiry: e.target.value,
-                          }))
-                        }
-                        className="h-12 text-base"
+                        onChange={(e) => handleExpiryChange(e.target.value)} // ← CHANGED
+                        className={`h-12 text-base ${expiryError ? 'border-red-500 bg-red-50' : ''}`} // ← CHANGED
                         required
                       />
                       <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" />
                     </div>
+                    
+                    {/* ← ADDED ERROR MESSAGE */}
+                    {expiryTouched && expiryError && (
+                      <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-md" role="alert">
+                        <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                          <p className="text-sm text-red-800 font-medium">
+                            {expiryError}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-3">
@@ -930,6 +975,7 @@ useEffect(() => {
                   <Button
                     type="submit"
                     className="h-14 sm:h-12 w-full sm:flex-1 text-base"
+                    disabled={!!expiryError} //
                   >
                     {editingItem ? "Update Item" : "Add Item"}
                   </Button>
