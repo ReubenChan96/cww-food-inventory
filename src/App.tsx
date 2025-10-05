@@ -28,7 +28,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogClose,
 } from "./components/ui/dialog";
 import {
@@ -370,184 +369,6 @@ useEffect(() => {
           >
             <Plus className="w-8 h-8" />
           </Button>
-
-          <Dialog
-            open={isAddDialogOpen}
-            onOpenChange={(open) => {
-              setIsAddDialogOpen(open);
-              if (!open) resetForm();
-            }}
-          >
-            <DialogContent className="sm:max-w-md w-[calc(100%-2rem)] max-h-[90vh] overflow-y-auto">
-              <form onSubmit={handleSubmit}>
-                <DialogHeader className="pb-4">
-                  <DialogTitle className="text-xl">
-                    {editingItem ? "Edit Item" : "Add Item"}
-                  </DialogTitle>
-                  <DialogDescription className="text-base">
-                    {editingItem
-                      ? "Update the item details below."
-                      : "Fill in the details to add to inventory."}
-                  </DialogDescription>
-                </DialogHeader>
-
-                <div className="space-y-6 pb-6">
-                  <div className="space-y-3">
-                    <Label htmlFor="name" className="text-base">
-                      Item Name *
-                    </Label>
-                    <Input
-                      id="name"
-                      placeholder="Enter item name"
-                      value={formData.name}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          name: e.target.value,
-                        }))
-                      }
-                      className="h-12 text-base"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-3">
-                    <Label
-                      htmlFor="description"
-                      className="text-base"
-                    >
-                      Description
-                    </Label>
-                    <Textarea
-                      id="description"
-                      placeholder="Enter item description (optional)"
-                      value={formData.description}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          description: e.target.value,
-                        }))
-                      }
-                      className="min-h-20 text-base"
-                      rows={3}
-                    />
-                  </div>
-
-                  <div className="space-y-3">
-                    <Label
-                      htmlFor="quantity"
-                      className="text-base"
-                    >
-                      Quantity *
-                    </Label>
-                    <Input
-                      id="quantity"
-                      type="number"
-                      min="1"
-                      placeholder="Enter quantity"
-                      value={formData.quantity}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          quantity: e.target.value,
-                        }))
-                      }
-                      className="h-12 text-base"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-3">
-                    <Label
-                      htmlFor="expiry"
-                      className="text-base"
-                    >
-                      Expiry Date *
-                    </Label>
-                    <div className="relative">
-                      <Input
-                        id="expiry"
-                        type="date"
-                        value={formData.expiry}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            expiry: e.target.value,
-                          }))
-                        }
-                        className="h-12 text-base"
-                        required
-                      />
-                      <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" />
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <Label
-                      htmlFor="donor"
-                      className="text-base"
-                    >
-                      Donor/Source
-                    </Label>
-                    <Input
-                      id="donor"
-                      placeholder="Enter donor name (optional)"
-                      value={formData.donor}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          donor: e.target.value,
-                        }))
-                      }
-                      className="h-12 text-base"
-                    />
-                  </div>
-
-                  <div className="space-y-3">
-                    <Label
-                      htmlFor="modified-by"
-                      className="text-base"
-                    >
-                      {editingItem
-                        ? "Modified By *"
-                        : "Added By *"}
-                    </Label>
-                    <Input
-                      id="modified-by"
-                      placeholder="Enter your name"
-                      value={formData.modifiedBy}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          modifiedBy: e.target.value,
-                        }))
-                      }
-                      className="h-12 text-base"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <DialogFooter className="gap-3 pt-4 border-t sm:flex-row flex-col-reverse">
-                  <DialogClose asChild>
-                    <Button
-                      variant="outline"
-                      onClick={resetForm}
-                      className="h-14 sm:h-12 w-full sm:flex-1 text-base"
-                    >
-                      Cancel
-                    </Button>
-                  </DialogClose>
-                  <Button
-                    type="submit"
-                    className="h-14 sm:h-12 w-full sm:flex-1 text-base"
-                  >
-                    {editingItem ? "Update Item" : "Add Item"}
-                  </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
         </div>
 
         {/* Stats Cards - Interactive Filters */}
@@ -938,6 +759,184 @@ useEffect(() => {
           </CardContent>
         </Card>
       </div>
+      
+                <Dialog
+            open={isAddDialogOpen}
+            onOpenChange={(open) => {
+              setIsAddDialogOpen(open);
+              if (!open) resetForm();
+            }}
+          >
+            <DialogContent className="sm:max-w-md w-[calc(100%-2rem)] max-h-[90vh] overflow-y-auto">
+              <form onSubmit={handleSubmit}>
+                <DialogHeader className="pb-4">
+                  <DialogTitle className="text-xl">
+                    {editingItem ? "Edit Item" : "Add Item"}
+                  </DialogTitle>
+                  <DialogDescription className="text-base">
+                    {editingItem
+                      ? "Update the item details below."
+                      : "Fill in the details to add to inventory."}
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="space-y-6 pb-6">
+                  <div className="space-y-3">
+                    <Label htmlFor="name" className="text-base">
+                      Item Name *
+                    </Label>
+                    <Input
+                      id="name"
+                      placeholder="Enter item name"
+                      value={formData.name}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          name: e.target.value,
+                        }))
+                      }
+                      className="h-12 text-base"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <Label
+                      htmlFor="description"
+                      className="text-base"
+                    >
+                      Description
+                    </Label>
+                    <Textarea
+                      id="description"
+                      placeholder="Enter item description (optional)"
+                      value={formData.description}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          description: e.target.value,
+                        }))
+                      }
+                      className="min-h-20 text-base"
+                      rows={3}
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <Label
+                      htmlFor="quantity"
+                      className="text-base"
+                    >
+                      Quantity *
+                    </Label>
+                    <Input
+                      id="quantity"
+                      type="number"
+                      min="1"
+                      placeholder="Enter quantity"
+                      value={formData.quantity}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          quantity: e.target.value,
+                        }))
+                      }
+                      className="h-12 text-base"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <Label
+                      htmlFor="expiry"
+                      className="text-base"
+                    >
+                      Expiry Date *
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        id="expiry"
+                        type="date"
+                        value={formData.expiry}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            expiry: e.target.value,
+                          }))
+                        }
+                        className="h-12 text-base"
+                        required
+                      />
+                      <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <Label
+                      htmlFor="donor"
+                      className="text-base"
+                    >
+                      Donor/Source
+                    </Label>
+                    <Input
+                      id="donor"
+                      placeholder="Enter donor name (optional)"
+                      value={formData.donor}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          donor: e.target.value,
+                        }))
+                      }
+                      className="h-12 text-base"
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <Label
+                      htmlFor="modified-by"
+                      className="text-base"
+                    >
+                      {editingItem
+                        ? "Modified By *"
+                        : "Added By *"}
+                    </Label>
+                    <Input
+                      id="modified-by"
+                      placeholder="Enter your name"
+                      value={formData.modifiedBy}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          modifiedBy: e.target.value,
+                        }))
+                      }
+                      className="h-12 text-base"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <DialogFooter className="gap-3 pt-4 border-t sm:flex-row flex-col-reverse">
+                  <DialogClose asChild>
+                    <Button
+                      variant="outline"
+                      onClick={resetForm}
+                      className="h-14 sm:h-12 w-full sm:flex-1 text-base"
+                    >
+                      Cancel
+                    </Button>
+                  </DialogClose>
+                  <Button
+                    type="submit"
+                    className="h-14 sm:h-12 w-full sm:flex-1 text-base"
+                  >
+                    {editingItem ? "Update Item" : "Add Item"}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog
