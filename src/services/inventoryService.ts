@@ -1,5 +1,24 @@
 import { supabase, InventoryItem } from '../lib/supabase'
 
+/**
+ * Transforms database row to frontend InventoryItem format
+ */
+function mapDbToInventoryItem(item: any): InventoryItem {
+  return {
+    id: item.id,
+    name: item.name,
+    description: item.description || '',
+    quantity: item.quantity,
+    expiry: item.expiry_date,
+    status: item.status,
+    batchNumber: item.batch_number,
+    receivedDate: item.received_date,
+    donor: item.donor,
+    lastModifiedBy: item.last_modified_by,
+    lastModifiedDate: item.last_modified_date,
+  }
+}
+
 export const inventoryService = {
   // Fetch all items from Supabase
   async getAll(): Promise<InventoryItem[]> {
@@ -7,26 +26,13 @@ export const inventoryService = {
       .from('inventory_items')
       .select('*')
       .order('created_at', { ascending: false })
-    
+
     if (error) {
       console.error('Error fetching items:', error)
       throw new Error(`Failed to fetch inventory: ${error.message}`)
     }
-    
-    // Map database column names to frontend format
-    return (data || []).map(item => ({
-      id: item.id,
-      name: item.name,
-      description: item.description || '',
-      quantity: item.quantity,
-      expiry: item.expiry_date,
-      status: item.status,
-      batchNumber: item.batch_number,
-      receivedDate: item.received_date,
-      donor: item.donor,
-      lastModifiedBy: item.last_modified_by,
-      lastModifiedDate: item.last_modified_date,
-    }))
+
+    return (data || []).map(mapDbToInventoryItem)
   },
 
   // Create new item
@@ -49,31 +55,19 @@ export const inventoryService = {
       .insert([dbItem])
       .select()
       .single()
-    
+
     if (error) {
       console.error('Error creating item:', error)
       throw new Error(`Failed to create item: ${error.message}`)
     }
-    
-    return {
-      id: data.id,
-      name: data.name,
-      description: data.description || '',
-      quantity: data.quantity,
-      expiry: data.expiry_date,
-      status: data.status,
-      batchNumber: data.batch_number,
-      receivedDate: data.received_date,
-      donor: data.donor,
-      lastModifiedBy: data.last_modified_by,
-      lastModifiedDate: data.last_modified_date,
-    }
+
+    return mapDbToInventoryItem(data)
   },
 
   // Update item
   async update(id: string, updates: Partial<InventoryItem>): Promise<InventoryItem> {
     const dbUpdates: any = {}
-    
+
     if (updates.name !== undefined) dbUpdates.name = updates.name
     if (updates.description !== undefined) dbUpdates.description = updates.description
     if (updates.quantity !== undefined) dbUpdates.quantity = updates.quantity
@@ -88,25 +82,13 @@ export const inventoryService = {
       .eq('id', id)
       .select()
       .single()
-    
+
     if (error) {
       console.error('Error updating item:', error)
       throw new Error(`Failed to update item: ${error.message}`)
     }
-    
-    return {
-      id: data.id,
-      name: data.name,
-      description: data.description || '',
-      quantity: data.quantity,
-      expiry: data.expiry_date,
-      status: data.status,
-      batchNumber: data.batch_number,
-      receivedDate: data.received_date,
-      donor: data.donor,
-      lastModifiedBy: data.last_modified_by,
-      lastModifiedDate: data.last_modified_date,
-    }
+
+    return mapDbToInventoryItem(data)
   },
 
   // Delete item

@@ -73,24 +73,6 @@ interface InventoryItem {
   lastModifiedDate?: string;
 }
 
-/**
- * Checks if a food item has expired
- * @param {string} expirationDate - The expiration date to check (YYYY-MM-DD format)
- * @returns {boolean} - true if expired, false if still valid
- */
-function isExpired(expirationDate: string): boolean {
-  if (!expirationDate) return false;
-  
-  const expDate = new Date(expirationDate);
-  const today = new Date();
-  
-  // Set both to midnight for fair comparison
-  today.setHours(0, 0, 0, 0);
-  expDate.setHours(0, 0, 0, 0);
-  
-  return expDate < today;
-}
-
 export default function App() {
     const [items, setItems] = useState<InventoryItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -109,7 +91,7 @@ useEffect(() => {
       setLoading(false);
     }
   }
-  
+
   fetchItems();
 }, []);
 
@@ -138,15 +120,25 @@ useEffect(() => {
   const [expiryError, setExpiryError] = useState("");
   const [expiryTouched, setExpiryTouched] = useState(false);
 
+  /**
+   * Calculates item status based on expiry date
+   * @param {string} expiryDate - The expiration date to check (YYYY-MM-DD format)
+   * @returns {"fresh" | "expiring" | "expired"} - The item status
+   */
   const getItemStatus = (
     expiryDate: string,
   ): "fresh" | "expiring" | "expired" => {
+    if (!expiryDate) return "fresh";
+
     const today = new Date();
     const expiry = new Date(expiryDate);
+
+    // Set both to midnight for fair comparison
+    today.setHours(0, 0, 0, 0);
+    expiry.setHours(0, 0, 0, 0);
+
     const diffTime = expiry.getTime() - today.getTime();
-    const diffDays = Math.ceil(
-      diffTime / (1000 * 60 * 60 * 24),
-    );
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     if (diffDays < 0) return "expired";
     if (diffDays <= 7) return "expiring";
@@ -178,17 +170,19 @@ useEffect(() => {
       modifiedBy: "",
     });
     setEditingItem(null);
+    setExpiryError("");
+    setExpiryTouched(false);
   };
 
   const handleExpiryChange = (newDate: string) => {
     setFormData((prev) => ({ ...prev, expiry: newDate }));
-    
+
     // Clear any previous error
     setExpiryError("");
     setExpiryTouched(true);
-    
+
     // Validate the new date
-    if (newDate && isExpired(newDate)) {
+    if (newDate && getItemStatus(newDate) === "expired") {
       setExpiryError(
         `Uh oh, this item seems to have expired, please check the label again!`
       );
@@ -208,8 +202,8 @@ useEffect(() => {
 
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
-    
-  if (formData.expiry && isExpired(formData.expiry)) {
+
+  if (formData.expiry && getItemStatus(formData.expiry) === "expired") {
       setExpiryError('Looks like this item is expired!');
       toast.error('Expired items cannot be added to the inventory');
       return; // Stop submission
